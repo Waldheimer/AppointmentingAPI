@@ -140,7 +140,7 @@ namespace Appointmenting.API.Infrastructure.Repositories
         //  **************************************************************
         //  ***** DELETE  ************************************************
         //  **************************************************************
-        public Task<Result<IEnumerable<Guid>>> DeleteByDate(DateOnly date)
+        public Task<Result<List<Guid>>> DeleteByDate(DateOnly date)
         {
             var deletedGuids = new List<Guid>();
             var result = ctx.TimeSlots.Where(t => t.day.Equals(date)).ToList();
@@ -156,11 +156,11 @@ namespace Appointmenting.API.Infrastructure.Repositories
                     deletedGuids.Add(t.Id);
                 }
             }
-            Result<IEnumerable<Guid>> res = new Result<IEnumerable<Guid>>(deletedGuids, deletedGuids.Count > 0, error);
+            Result<List<Guid>> res = new Result<List<Guid>>(deletedGuids, deletedGuids.Count > 0, error);
             return Task.FromResult(res);
         }
 
-        public Task<Result<IEnumerable<Guid>>> DeleteByDateAndTime(DateOnly date, TimeOnly time)
+        public Task<Result<List<Guid>>> DeleteByDateAndTime(DateOnly date, TimeOnly time)
         {
             var deletedGuids = new List<Guid>();
             var result = ctx.TimeSlots.Where(t => t.day.Equals(date) && t.time.Equals(time)).ToList();
@@ -176,11 +176,11 @@ namespace Appointmenting.API.Infrastructure.Repositories
                     deletedGuids.Add(t.Id);
                 }
             }
-            Result<IEnumerable<Guid>> res = new Result<IEnumerable<Guid>>(deletedGuids, deletedGuids.Count > 0, error);
+            Result<List<Guid>> res = new Result<List<Guid>>(deletedGuids, deletedGuids.Count > 0, error);
             return Task.FromResult(res);
         }
 
-        public Task<Result<IEnumerable<Guid>>> DeleteByDateAndTimeSpan(DateOnly date, TimeOnly start, TimeOnly end)
+        public Task<Result<List<Guid>>> DeleteByDateAndTimeSpan(DateOnly date, TimeOnly start, TimeOnly end)
         {
             var deletedGuids = new List<Guid>();
             var result = ctx.TimeSlots.Where(t => t.day.Equals(date) && t.time >= start && t.time <= end).ToList();
@@ -196,7 +196,7 @@ namespace Appointmenting.API.Infrastructure.Repositories
                     deletedGuids.Add(t.Id);
                 }
             }
-            Result<IEnumerable<Guid>> res = new Result<IEnumerable<Guid>>(deletedGuids, deletedGuids.Count > 0, error);
+            Result<List<Guid>> res = new Result<List<Guid>>(deletedGuids, deletedGuids.Count > 0, error);
             return Task.FromResult(res);
         }
 

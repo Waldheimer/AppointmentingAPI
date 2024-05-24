@@ -33,11 +33,11 @@ namespace Appointmenting.API.Infrastructure.Validators
                 return DateTime.TryParse($"{data.Date} {data.Time}", out resultDateTime) && resultDateTime >= DateTime.Now;
             }).WithMessage("Value is not a valid DateTime representation or DateTime already passed!");
             //  Check if the given DateTime already exists in the DB
-            //RuleFor(c => c.Value).Must(data =>
-            //{
-            //    var result = repo.GetByDateAndTime(DateOnly.Parse(data.Date), TimeOnly.Parse(data.Time));
-            //    return result == null;
-            //}).WithMessage("Timeslot already created!");
+            RuleFor(c => c.Value).Must(data =>
+            {
+                var result = repo.GetByDateAndTime(DateOnly.Parse(data.Date), TimeOnly.Parse(data.Time));
+                return result == null;
+            }).WithMessage("Timeslot already created!");
         }
 
 

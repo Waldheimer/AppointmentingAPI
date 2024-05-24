@@ -33,10 +33,10 @@ namespace Appointmenting.API.Application.RepositoryContracts
         //  DELETE
         Task<Result<Guid>> DeleteById(Guid id);
         //  ***** Delete all Timeslots on a given Date
-        Task<Result<IEnumerable<Guid>>> DeleteByDate(DateOnly date);
+        Task<Result<List<Guid>>> DeleteByDate(DateOnly date);
         //  ***** Delete all Timeslots on a given Date and a given Time
-        Task<Result<IEnumerable<Guid>>> DeleteByDateAndTime(DateOnly date, TimeOnly time);
+        Task<Result<List<Guid>>> DeleteByDateAndTime(DateOnly date, TimeOnly time);
         //  ***** Delete all Timeslots on a given Date from StartTime to EndTime
-        Task<Result<IEnumerable<Guid>>> DeleteByDateAndTimeSpan(DateOnly date, TimeOnly start, TimeOnly end);
+        Task<Result<List<Guid>>> DeleteByDateAndTimeSpan(DateOnly date, TimeOnly start, TimeOnly end);
     }
 }
