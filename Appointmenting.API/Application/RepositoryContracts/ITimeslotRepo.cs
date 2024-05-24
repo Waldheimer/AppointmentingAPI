@@ -15,13 +15,13 @@ namespace Appointmenting.API.Application.RepositoryContracts
         //  ***** All Timeslots in ascending order by Date and Time
         Task<Result<List<TimeSlot>?>> GetAllOrderedAscending();
         //  ***** All Timeslots in ascending order by Date and Time on the given Date
-        Task<Result<IOrderedEnumerable<TimeSlot>?>> GetOrderedAscendingByDay(DateOnly date);
+        Task<Result<List<TimeSlot>?>> GetOrderedAscendingByDay(DateOnly date);
         //  ***** All Timeslots in ascending order by Date and Time from given Date on
-        Task<Result<IOrderedEnumerable<TimeSlot>?>> GetOrderedAscendingFromDateOn(DateOnly date);
+        Task<Result<List<TimeSlot>?>> GetOrderedAscendingFromDateOn(DateOnly date);
         //  ***** All Timeslots in ascending order by Date and Time from StartDate to EndDate
-        Task<Result<IOrderedEnumerable<TimeSlot>?>> GetOrderedAscendingFromDateToDate(DateOnly start, DateOnly end);
+        Task<Result<List<TimeSlot>?>> GetOrderedAscendingFromDateToDate(DateOnly start, DateOnly end);
         //  ***** All Timeslots in ascending order by Time from StartTime to EndTime on given Date
-        Task<Result<IOrderedEnumerable<TimeSlot>?>> GetOrderedAscendingFromTimeToTimeOnDate(DateOnly date, TimeOnly start, TimeOnly end);
+        Task<Result<List<TimeSlot>?>> GetOrderedAscendingFromTimeToTimeOnDate(DateOnly date, TimeOnly start, TimeOnly end);
         //  ***** The Timeslot with the given ID
         Task<Result<TimeSlot>> GetById(Guid id);
         //  ***** The Timeslot at given Date and Time

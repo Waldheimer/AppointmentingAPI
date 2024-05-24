@@ -5,7 +5,6 @@ using Appointmenting.API.Domain.Primitives;
 using Appointmenting.API.Infrastructure.Database;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 namespace Appointmenting.API.Infrastructure.Repositories
 {
@@ -66,30 +65,57 @@ namespace Appointmenting.API.Infrastructure.Repositories
 
         public Task<Result<TimeSlot>> GetByDateAndTime(DateOnly date, TimeOnly time)
         {
-            var result = ctx.TimeSlots.Where(t => t.day.Equals(date) && t.time.Equals(time));
-            var error = result == null ? new Error("TimeSlot.NotFound", "Timeslot could not be found in the Database") : Error.None;
-            Result<TimeSlot> res = new Result<TimeSlot>(result!.FirstOrDefault(), result != null, error);
+            var result = ctx.TimeSlots.Where(t => t.day.Equals(date) && t.time.Equals(time)).FirstOrDefault();
+            var error = 
+                result == null 
+                ? new Error("TimeSlot.NotFound", "Timeslot could not be found in the Database") 
+                : Error.None;
+            Result<TimeSlot> res = new Result<TimeSlot>(result, result != null, error);
             return Task.FromResult(res);
         }
 
-        public Task<Result<IOrderedEnumerable<TimeSlot>?>> GetOrderedAscendingByDay(DateOnly date)
+        public Task<Result<List<TimeSlot>?>> GetOrderedAscendingByDay(DateOnly date)
         {
-            throw new NotImplementedException();
+            var result = ctx.TimeSlots.Where(t => t.day.Equals(date)).OrderBy(t => t.time).ToList();
+            var error =
+                result == null
+                ? new Error("TimeSlot.NotFound", "Timeslots for given Date could not be found in the Database")
+                : Error.None;
+            Result<List<TimeSlot>?> res = new Result<List<TimeSlot>?>(result, result != null, error);
+            return Task.FromResult(res);
         }
 
-        public Task<Result<IOrderedEnumerable<TimeSlot>?>> GetOrderedAscendingFromDateOn(DateOnly date)
+        public Task<Result<List<TimeSlot>?>> GetOrderedAscendingFromDateOn(DateOnly date)
         {
-            throw new NotImplementedException();
+            var result = ctx.TimeSlots.Where(t => t.day >= date).OrderBy(t => t.time).ToList();
+            var error =
+                result == null
+                ? new Error("TimeSlot.NotFound", "Timeslots from given Date on could not be found in the Database")
+                : Error.None;
+            Result<List<TimeSlot>?> res = new Result<List<TimeSlot>?>(result, result != null, error);
+            return Task.FromResult(res);
         }
 
-        public Task<Result<IOrderedEnumerable<TimeSlot>?>> GetOrderedAscendingFromDateToDate(DateOnly start, DateOnly end)
+        public Task<Result<List<TimeSlot>?>> GetOrderedAscendingFromDateToDate(DateOnly start, DateOnly end)
         {
-            throw new NotImplementedException();
+            var result = ctx.TimeSlots.Where(t => t.day >= start && t.day <= end).OrderBy(t => t.time).ToList();
+            var error =
+                result == null
+                ? new Error("TimeSlot.NotFound", "Timeslots between given Dates could not be found in the Database")
+                : Error.None;
+            Result<List<TimeSlot>?> res = new Result<List<TimeSlot>?>(result, result != null, error);
+            return Task.FromResult(res);
         }
 
-        public Task<Result<IOrderedEnumerable<TimeSlot>?>> GetOrderedAscendingFromTimeToTimeOnDate(DateOnly date, TimeOnly start, TimeOnly end)
+        public Task<Result<List<TimeSlot>?>> GetOrderedAscendingFromTimeToTimeOnDate(DateOnly date, TimeOnly start, TimeOnly end)
         {
-            throw new NotImplementedException();
+            var result = ctx.TimeSlots.Where(t => t.day.Equals(date) && t.time >= start && t.time <= end).OrderBy(t => t.time).ToList();
+            var error =
+                result == null
+                ? new Error("TimeSlot.NotFound", "Timeslots from given Times on given Date could not be found in the Database")
+                : Error.None;
+            Result<List<TimeSlot>?> res = new Result<List<TimeSlot>?>(result, result != null, error);
+            return Task.FromResult(res);
         }
 
         //  **************************************************************
@@ -97,7 +123,18 @@ namespace Appointmenting.API.Infrastructure.Repositories
         //  **************************************************************
         public Task<Result<Guid>> Update(TimeSlot timeslot)
         {
-            throw new NotImplementedException();
+            var result = ctx.TimeSlots.FirstOrDefault(t => t.Id == timeslot.Id);
+            var error =
+                result == null
+                ? new Error("TimeSlot.NotFound", "Timeslot with given ID could not be found in the Database")
+                : Error.None;
+            if(result != null)
+            {
+                ctx.TimeSlots.Add(timeslot);
+                ctx.TimeSlots.Remove(result);
+            }
+            Result<Guid> res = new Result<Guid>(timeslot.Id, result != null, error);
+            return Task.FromResult(res);
         }
 
         //  **************************************************************
@@ -105,23 +142,77 @@ namespace Appointmenting.API.Infrastructure.Repositories
         //  **************************************************************
         public Task<Result<IEnumerable<Guid>>> DeleteByDate(DateOnly date)
         {
-            throw new NotImplementedException();
+            var deletedGuids = new List<Guid>();
+            var result = ctx.TimeSlots.Where(t => t.day.Equals(date)).ToList();
+            var error =
+                result == null
+                ? new Error("TimeSlot.NotFound", "Timeslots on given Date could not be found in the Database")
+                : Error.None;
+            if(result != null && result.Count > 0)
+            {
+                foreach( var t in result)
+                {
+                    ctx.TimeSlots.Remove(t);
+                    deletedGuids.Add(t.Id);
+                }
+            }
+            Result<IEnumerable<Guid>> res = new Result<IEnumerable<Guid>>(deletedGuids, deletedGuids.Count > 0, error);
+            return Task.FromResult(res);
         }
 
         public Task<Result<IEnumerable<Guid>>> DeleteByDateAndTime(DateOnly date, TimeOnly time)
         {
-            throw new NotImplementedException();
+            var deletedGuids = new List<Guid>();
+            var result = ctx.TimeSlots.Where(t => t.day.Equals(date) && t.time.Equals(time)).ToList();
+            var error =
+                result == null
+                ? new Error("TimeSlot.NotFound", "Timeslots on given Date and Time could not be found in the Database")
+                : Error.None;
+            if (result != null && result.Count > 0)
+            {
+                foreach (var t in result)
+                {
+                    ctx.TimeSlots.Remove(t);
+                    deletedGuids.Add(t.Id);
+                }
+            }
+            Result<IEnumerable<Guid>> res = new Result<IEnumerable<Guid>>(deletedGuids, deletedGuids.Count > 0, error);
+            return Task.FromResult(res);
         }
 
         public Task<Result<IEnumerable<Guid>>> DeleteByDateAndTimeSpan(DateOnly date, TimeOnly start, TimeOnly end)
         {
-            throw new NotImplementedException();
+            var deletedGuids = new List<Guid>();
+            var result = ctx.TimeSlots.Where(t => t.day.Equals(date) && t.time >= start && t.time <= end).ToList();
+            var error =
+                result == null
+                ? new Error("TimeSlot.NotFound", "Timeslots on given Date and Times could not be found in the Database")
+                : Error.None;
+            if (result != null && result.Count > 0)
+            {
+                foreach (var t in result)
+                {
+                    ctx.TimeSlots.Remove(t);
+                    deletedGuids.Add(t.Id);
+                }
+            }
+            Result<IEnumerable<Guid>> res = new Result<IEnumerable<Guid>>(deletedGuids, deletedGuids.Count > 0, error);
+            return Task.FromResult(res);
         }
 
         public Task<Result<Guid>> DeleteById(Guid id)
         {
-            throw new NotImplementedException();
-        
+            var result = ctx.TimeSlots.Where(t => t.Id.Equals(id)).FirstOrDefault();
+            var error =
+                result == null
+                ? new Error("TimeSlot.NotFound", "Timeslots with given ID could not be found in the Database")
+                : Error.None;
+            if (result != null)
+            {
+                ctx.TimeSlots.Remove(result);
+            }
+            Result<Guid> res = new Result<Guid>(id, result != null, error);
+            return Task.FromResult(res);
         }
 
         
