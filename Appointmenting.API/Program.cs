@@ -4,6 +4,7 @@ using Appointmenting.API.Domain.Entities;
 using Appointmenting.API.Infrastructure.Database;
 using Appointmenting.API.Infrastructure.Extensions;
 using Appointmenting.API.Infrastructure.Repositories;
+using Appointmenting.API.Infrastructure.Validators;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +31,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("Appointments")));
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+builder.Services.AddSingleton<DateTimeValidator>();
 
 builder.Services.AddScoped<ITimeslotRepo, TimeSlotRepository>();
 //builder.Services.AddScoped<IKbCode, KBCodeRepo>();

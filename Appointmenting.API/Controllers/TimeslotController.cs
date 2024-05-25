@@ -22,9 +22,14 @@ namespace Appointmenting.API.Controllers
             this.mediator = mediator;
             this.unit = unit;
         }
-        //  ***********************************************
-        //  ***** CREATE    *******************************
-        //  ***********************************************
+        //  *******************************
+        //  ***** C R E A T E   ***********
+        //  *******************************
+
+        //  ----- URL       : api/timeslot                      -------------------------
+        //  ----- POST      : given TimeSlot as TimeSlotDTO     -------------------------
+        //  ----- Validates : the dto's data against DateOnly/TimeOnly, -----------------
+        //                    passed Time and duplicate Database entry  -----------------
         [HttpPost]
         public async Task<Result<Guid>> CreateNewTimeSlot([FromBody] TimeslotDTO dto, CreateTimeSlotValidator validator)
         {
@@ -41,9 +46,14 @@ namespace Appointmenting.API.Controllers
             }
             return result!;
         }
-        //  ***********************************************
-        //  ***** READ  ***********************************
-        //  ***********************************************
+        
+        //  *******************************
+        //  ***** R E A D   ***************
+        //  *******************************
+
+        //  ----- URL       : api/timeslot      -----------------------------------------
+        //  ----- GET       : all TimeSlots     -----------------------------------------
+        //  ----- Validates : *****             ----------------------------------------- 
         [HttpGet]
         public async Task<Result<List<TimeSlot>?>> GetAll()
         {
@@ -53,15 +63,119 @@ namespace Appointmenting.API.Controllers
             return result;
         }
 
-        //  ***********************************************
-        //  ***** UPDATE  *********************************
-        //  ***********************************************
+        //  ----- URL       : api/timeslot/date                     ---------------------
+        //  ----- GET       : all TimeSlots by given Date           ---------------------
+        //  ----- Validates : argument against DateOnly/TimeOnly    ---------------------
+        [HttpGet("date")]
+        public async Task<Result<List<TimeSlot>?>> GetAllByDate(string date, DateTimeValidator validator)
+        {
+            ConversionResult validationResult = validator.TryValidate(date);
+            if(!validationResult.DateSuccess) 
+            {
+                return new Result<List<TimeSlot>?>(null, false, 
+                    new Error("DateError.Parsing", "Value is not a valid Date/Time representation"));
+            }
+            else
+            {
+                var query = new GetTimeSlotsByDateQuery(validationResult.Day);
+                var result = await mediator.Send(query);
+                return result;
+            }
+        }
+
+        //  ----- URL       : api/timeslot/date/time                ---------------------
+        //  ----- GET       : TimeSlot by Date and Time             ---------------------
+        //  ----- Validates : arguments against DateOnly/TimeOnly   ---------------------
+        [HttpGet("date/time")]
+        public async Task<Result<TimeSlot?>> GetByDateAndTime(string date, string time, DateTimeValidator validator)
+        {
+            var validationResult = validator.TryValidate(date, time);
+            if (!(validationResult.DateSuccess & validationResult.TimeSuccess))
+            {
+                return new Result<TimeSlot?>(null, false, 
+                    new Error("DateTimeError.Parsing", "At least one of the given values is not a valid Date/Time representation"));
+            }
+            else
+            {
+                var query = new GetTimeSlotsByDateTimeQuery(validationResult.Day, validationResult.Time);
+                var result = await mediator.Send(query);
+                return result;
+            }
+        }
+
+        //  ----- URL       : api/timeslot/startdate                ---------------------
+        //  ----- GET       : all TimeSlots from the given Date on  ---------------------
+        //  ----- Validates : argument against DateOnly             ---------------------
+        [HttpGet("startdate")]
+        public async Task<Result<List<TimeSlot>?>> GetFromDateOn(string date, DateTimeValidator validator)
+        {
+            var validationResult = validator.TryValidate(date);
+            if (!validationResult.DateSuccess)
+            {
+                return new Result<List<TimeSlot>?>(null, false,
+                    new Error("DateError.Parsing", "Value is not a valid Date representation!"));
+            }
+            else
+            {
+                var query = new GetTimeSlotsFromDateOnQuery(validationResult.Day);
+                var result = await mediator.Send(query);
+                return result;
+            }
+        }
+
+        //  ----- URL       : api/timeslot/startdate/enddate       ----------------------
+        //  ----- GET       : all TimeSlots between StartDate and EndDate   -------------
+        //  ----- Validates : arguments against DateOnly            ---------------------
+        [HttpGet("startdate/enddate")]
+        public async Task<Result<List<TimeSlot>?>> GetFromDateToDate(string start, string end, DateTimeValidator validator)
+        {
+            var validationResult_start = validator.TryValidate(start);
+            var validationResult_end = validator.TryValidate(end);
+            if(!(validationResult_start.DateSuccess && validationResult_end.DateSuccess))
+            {
+                return new(null, false, new Error("DateError.Parsing", "At least one value is not a valid Date representation!"));
+            }
+            else
+            {
+                var query = new GetTimeSlotsFromDateToDateQuery(validationResult_start.Day, validationResult_end.Day);
+                var result = await mediator.Send(query);
+                return result;
+            }
+        }
+
+        //  ----- URL       : api/timeslot/day/starttime/endtime    ---------------------
+        //  ----- GET       : all TimeSlots on given Day between StartTime and EndTime --
+        //  ----- Validates : arguments against DateOnly/TimeOnly
+        [HttpGet("date/starttime/endtime")]
+        public async Task<Result<List<TimeSlot>?>> GetFromTimeToTimeOnDate(string date, string start, string end, 
+            DateTimeValidator validator)
+        {
+            var validationResult_datestart = validator.TryValidate(date, start);
+            var validationResult_end = validator.TryValidate(end);
+            if (!(validationResult_datestart.DateSuccess 
+                && validationResult_datestart.TimeSuccess 
+                && validationResult_end.TimeSuccess))
+            {
+                return new(null, false, new Error("DateTimeError.Parsing", "At least on value is not a valid Date/Time representation"));
+            }
+            else
+            {
+                var query = new GetTimeSlotsFromTimeToTimeOnDateQuery(validationResult_datestart.Day,
+                    validationResult_datestart.Time, validationResult_end.Time);
+                var result = await mediator.Send(query);
+                return result;
+            }
+        }
+
+        //  *********************************
+        //  ***** U P D A T E   *************
+        //  *********************************
 
 
 
 
-        //  ***********************************************
-        //  ***** DELETE  *********************************
-        //  ***********************************************
+        //  *********************************
+        //  ***** D E L E T E   *************
+        //  *********************************
     }
 }

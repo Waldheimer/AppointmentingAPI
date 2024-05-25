@@ -17,7 +17,7 @@ namespace Appointmenting.API.Infrastructure.Repositories
             this.ctx = ctx;
         }
         //  **************************************************************
-        //  ***** CREATE    **********************************************
+        //  ***** C R E A T E    *****************************************
         //  **************************************************************
         public Task<Result<Guid>> Create(TimeslotDTO dto)
         {
@@ -36,16 +36,25 @@ namespace Appointmenting.API.Infrastructure.Repositories
         }
 
         //  **************************************************************
-        //  ***** READ  **************************************************
+        //  ***** R E A D  ***********************************************
         //  **************************************************************
+        #region unused
         public Task<Result<IEnumerable<TimeSlot>?>> GetAll()
         {
             throw new NotImplementedException();
-        }
+        } // UNUSED
+        public Task<Result<TimeSlot>> GetById(Guid id)
+        {
+            throw new NotImplementedException();
+        } // UNUSED
+        #endregion
 
         public Task<Result<List<TimeSlot>?>> GetAllOrderedAscending()
         {
-            var result = ctx.TimeSlots.OrderBy(t => t.day).OrderBy(t => t.time).AsNoTracking().ToList();
+            var result = ctx.TimeSlots.AsNoTracking()
+                .OrderBy(t => t.time)
+                .OrderBy(t => t.day)
+                .ToList();
             Result<List<TimeSlot>?> res;
             if (result.Count() > 0)
             {
@@ -58,25 +67,25 @@ namespace Appointmenting.API.Infrastructure.Repositories
             return Task.FromResult(res);
         }
 
-        public Task<Result<TimeSlot>> GetById(Guid id)
+        public Task<Result<TimeSlot?>> GetByDateAndTime(DateOnly date, TimeOnly time)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<Result<TimeSlot>> GetByDateAndTime(DateOnly date, TimeOnly time)
-        {
-            var result = ctx.TimeSlots.Where(t => t.day.Equals(date) && t.time.Equals(time)).FirstOrDefault();
+            var result = ctx.TimeSlots.AsNoTracking()
+                .Where(t => t.day.Equals(date) && t.time.Equals(time))
+                .FirstOrDefault();
             var error = 
                 result == null 
                 ? new Error("TimeSlot.NotFound", "Timeslot could not be found in the Database") 
                 : Error.None;
-            Result<TimeSlot> res = new Result<TimeSlot>(result, result != null, error);
+            Result<TimeSlot?> res = new Result<TimeSlot?>(result, result != null, error);
             return Task.FromResult(res);
         }
 
         public Task<Result<List<TimeSlot>?>> GetOrderedAscendingByDay(DateOnly date)
         {
-            var result = ctx.TimeSlots.Where(t => t.day.Equals(date)).OrderBy(t => t.time).ToList();
+            var result = ctx.TimeSlots.AsNoTracking()
+                .Where(t => t.day.Equals(date))
+                .OrderBy(t => t.time)
+                .ToList();
             var error =
                 result == null
                 ? new Error("TimeSlot.NotFound", "Timeslots for given Date could not be found in the Database")
@@ -87,7 +96,11 @@ namespace Appointmenting.API.Infrastructure.Repositories
 
         public Task<Result<List<TimeSlot>?>> GetOrderedAscendingFromDateOn(DateOnly date)
         {
-            var result = ctx.TimeSlots.Where(t => t.day >= date).OrderBy(t => t.time).ToList();
+            var result = ctx.TimeSlots.AsNoTracking()
+                .Where(t => t.day >= date)
+                .OrderBy(t => t.time)
+                .OrderBy(t => t.day)
+                .ToList();
             var error =
                 result == null
                 ? new Error("TimeSlot.NotFound", "Timeslots from given Date on could not be found in the Database")
@@ -98,7 +111,11 @@ namespace Appointmenting.API.Infrastructure.Repositories
 
         public Task<Result<List<TimeSlot>?>> GetOrderedAscendingFromDateToDate(DateOnly start, DateOnly end)
         {
-            var result = ctx.TimeSlots.Where(t => t.day >= start && t.day <= end).OrderBy(t => t.time).ToList();
+            var result = ctx.TimeSlots.AsNoTracking()
+                .Where(t => t.day >= start && t.day <= end)
+                .OrderBy(t => t.time)
+                .OrderBy(t => t.day)
+                .ToList();
             var error =
                 result == null
                 ? new Error("TimeSlot.NotFound", "Timeslots between given Dates could not be found in the Database")
@@ -109,7 +126,10 @@ namespace Appointmenting.API.Infrastructure.Repositories
 
         public Task<Result<List<TimeSlot>?>> GetOrderedAscendingFromTimeToTimeOnDate(DateOnly date, TimeOnly start, TimeOnly end)
         {
-            var result = ctx.TimeSlots.Where(t => t.day.Equals(date) && t.time >= start && t.time <= end).OrderBy(t => t.time).ToList();
+            var result = ctx.TimeSlots.AsNoTracking()
+                .Where(t => t.day.Equals(date) && t.time >= start && t.time <= end)
+                .OrderBy(t => t.time)
+                .ToList();
             var error =
                 result == null
                 ? new Error("TimeSlot.NotFound", "Timeslots from given Times on given Date could not be found in the Database")
@@ -119,7 +139,7 @@ namespace Appointmenting.API.Infrastructure.Repositories
         }
 
         //  **************************************************************
-        //  ***** UPDATE  ************************************************
+        //  ***** U P D A T E  *******************************************
         //  **************************************************************
         public Task<Result<Guid>> Update(TimeSlot timeslot)
         {
@@ -138,7 +158,7 @@ namespace Appointmenting.API.Infrastructure.Repositories
         }
 
         //  **************************************************************
-        //  ***** DELETE  ************************************************
+        //  ***** D E L E T E  *******************************************
         //  **************************************************************
         public Task<Result<List<Guid>>> DeleteByDate(DateOnly date)
         {
