@@ -32,7 +32,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-builder.Services.AddSingleton<DateTimeValidator>();
+builder.Services.AddScoped<CreateTimeSlotValidator>();
+builder.Services.AddScoped<UpdateTimeslotValidator>();
+builder.Services.AddScoped<DeleteTimeslotValidator>();
+builder.Services.AddScoped<DateTimeValidator>();
 
 builder.Services.AddScoped<ITimeslotRepo, TimeSlotRepository>();
 //builder.Services.AddScoped<IKbCode, KBCodeRepo>();

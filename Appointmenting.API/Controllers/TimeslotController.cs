@@ -171,7 +171,25 @@ namespace Appointmenting.API.Controllers
         //  ***** U P D A T E   *************
         //  *********************************
 
-
+        //  ----- URL       : api/timeslot                              -----------------
+        //  ----- PUT       : the TimeSlot to update with new values    -----------------
+        //  ----- Validates : the argument against existence in Database     ------------
+        [HttpPut]
+        public async Task<Result<Guid>?> Update([FromBody] UpdateTimeslotDTO timeSlot, UpdateTimeslotValidator validator)
+        {
+            var command = new UpdateTimeSlotCommand(timeSlot);
+            var validationResult =  validator.Validate(command);
+            if (!validationResult.IsValid)
+            {
+                return new Result<Guid>(Guid.Empty, false, new Error("Parsing.Error", validationResult.Errors[0].ToString()));
+            }
+            var result = await mediator.Send(command);
+            if (result != null)
+            {
+                await unit.SaveChangesAsync(CancellationToken.None);
+            }
+            return result!;
+        }
 
 
         //  *********************************

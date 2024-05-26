@@ -10,5 +10,12 @@ namespace Appointmenting.API.Domain.Entities
         {
             return new TimeSlot(DateOnly.Parse(dto.Date), TimeOnly.Parse(dto.Time));
         }
+        public static TimeSlot FromDTO(UpdateTimeslotDTO dto)
+        {
+            TimeSlot ts = new TimeSlot(DateOnly.Parse(dto.Date), TimeOnly.Parse(dto.Time));
+            ts.Id = dto.ID;
+
+            return ts;
+        }
     }
 }

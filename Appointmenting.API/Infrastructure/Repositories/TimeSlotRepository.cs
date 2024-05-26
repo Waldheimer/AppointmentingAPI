@@ -43,11 +43,23 @@ namespace Appointmenting.API.Infrastructure.Repositories
         {
             throw new NotImplementedException();
         } // UNUSED
+        #endregion
         public Task<Result<TimeSlot>> GetById(Guid id)
         {
-            throw new NotImplementedException();
-        } // UNUSED
-        #endregion
+            var result = ctx.TimeSlots.AsNoTracking()
+                .Where(c => c.Id == id)
+                .First();
+            Result<TimeSlot> res;
+            if(result == null)
+            {
+                res = new(result, false, new Error("TimeSlot.Find", "Unable to find requested TimeSlot"));
+            }
+            else
+            {
+                res = new(result, true, Error.None);
+            }
+            return Task.FromResult(res);
+        } 
 
         public Task<Result<List<TimeSlot>?>> GetAllOrderedAscending()
         {
@@ -141,19 +153,19 @@ namespace Appointmenting.API.Infrastructure.Repositories
         //  **************************************************************
         //  ***** U P D A T E  *******************************************
         //  **************************************************************
-        public Task<Result<Guid>> Update(TimeSlot timeslot)
+        public Task<Result<Guid>> Update(UpdateTimeslotDTO timeslot)
         {
-            var result = ctx.TimeSlots.FirstOrDefault(t => t.Id == timeslot.Id);
+            var result = ctx.TimeSlots.AsNoTracking().FirstOrDefault(t => t.Id == timeslot.ID);
             var error =
                 result == null
                 ? new Error("TimeSlot.NotFound", "Timeslot with given ID could not be found in the Database")
                 : Error.None;
             if(result != null)
             {
-                ctx.TimeSlots.Add(timeslot);
                 ctx.TimeSlots.Remove(result);
+                ctx.TimeSlots.Add(TimeSlot.FromDTO(timeslot));
             }
-            Result<Guid> res = new Result<Guid>(timeslot.Id, result != null, error);
+            Result<Guid> res = new Result<Guid>(timeslot.ID, result != null, error);
             return Task.FromResult(res);
         }
 

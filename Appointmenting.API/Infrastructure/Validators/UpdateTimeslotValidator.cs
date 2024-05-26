@@ -4,40 +4,42 @@ using FluentValidation;
 
 namespace Appointmenting.API.Infrastructure.Validators
 {
-    public class CreateTimeSlotValidator : AbstractValidator<CreateTimeSlotCommand>
+    public class UpdateTimeslotValidator : AbstractValidator<UpdateTimeSlotCommand>
     {
-
         //----------------------------------------------------------------
-        //  Check if given TimeslotDTO has valid entries for Date and Time
+        //  Check that the given ID already exist in the DB
+        //  if given UpdateTimeslotDTO has valid entries for Date and Time
         //  if the combined DateTime has not already passed and 
-        //  that the given DateTime combination does not already exist in the DB
         //----------------------------------------------------------------
-        public CreateTimeSlotValidator(ITimeslotRepo repo)
+        public UpdateTimeslotValidator(ITimeslotRepo repo)
         {
+            //  Check if ID exists in Database
+            RuleFor(t => t.TimeSlot.ID).Must((id) =>
+            {
+                var result = repo.GetById(id);
+                Console.WriteLine(result.Result.Value.Id);
+                return result.Result.Value != null;
+            }).WithMessage("Timeslot does not exist in Database");
+
             //  Check is Date is valid and not already passed
             DateOnly resultDate;
-            RuleFor(c => c.Value.Date).Must(data =>
+            RuleFor(t => t.TimeSlot.Date).Must(data =>
             {
                 return DateOnly.TryParse(data, out resultDate) && resultDate >= DateOnly.FromDateTime(DateTime.Today);
             }).WithMessage("Value is not a valid Date representation or date already passed!");
             //  Check if Time is valid
             TimeOnly resultTime;
-            RuleFor(c => c.Value.Time).Must(data =>
+            RuleFor(t => t.TimeSlot.Time).Must(data =>
             {
                 return TimeOnly.TryParse(data, out resultTime);
             }).WithMessage("Value is not a valid Time representation!");
             //  Check of Date/Time combination is valid and not already passed
             DateTime resultDateTime;
-            RuleFor(c => c.Value).Must(data =>
+            RuleFor(t => t.TimeSlot).Must(data =>
             {
                 return DateTime.TryParse($"{data.Date} {data.Time}", out resultDateTime) && resultDateTime >= DateTime.Now;
             }).WithMessage("Value is not a valid DateTime representation or DateTime already passed!");
-            //  Check if the given DateTime already exists in the DB
-            RuleFor(c => c.Value).Must(data =>
-            {
-                var result = repo.GetByDateAndTime(DateOnly.Parse(data.Date), TimeOnly.Parse(data.Time));
-                return result == null;
-            }).WithMessage("Timeslot already created!");
+
         }
     }
 }

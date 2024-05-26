@@ -28,7 +28,7 @@ namespace Appointmenting.API.Application.RepositoryContracts
         Task<Result<TimeSlot?>> GetByDateAndTime(DateOnly date, TimeOnly time);
 
         //  UPDATE
-        Task<Result<Guid>> Update(TimeSlot timeslot);
+        Task<Result<Guid>> Update(UpdateTimeslotDTO timeslot);
 
         //  DELETE
         Task<Result<Guid>> DeleteById(Guid id);
