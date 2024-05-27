@@ -34,6 +34,8 @@ namespace Appointmenting.API.Application.RepositoryContracts
         Task<Result<Guid>> DeleteById(Guid id);
         //  ***** Delete all Timeslots on a given Date
         Task<Result<List<Guid>>> DeleteByDate(DateOnly date);
+        //  ***** Delete all Timeslots before a given Date
+        Task<Result<List<Guid>>> DeleteBeforeDate(DateOnly date);
         //  ***** Delete all Timeslots on a given Date and a given Time
         Task<Result<List<Guid>>> DeleteByDateAndTime(DateOnly date, TimeOnly time);
         //  ***** Delete all Timeslots on a given Date from StartTime to EndTime

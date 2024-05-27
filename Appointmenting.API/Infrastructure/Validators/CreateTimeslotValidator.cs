@@ -36,7 +36,7 @@ namespace Appointmenting.API.Infrastructure.Validators
             RuleFor(c => c.Value).Must(data =>
             {
                 var result = repo.GetByDateAndTime(DateOnly.Parse(data.Date), TimeOnly.Parse(data.Time));
-                return result == null;
+                return result != null;
             }).WithMessage("Timeslot already created!");
         }
     }

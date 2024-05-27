@@ -29,7 +29,7 @@ namespace Appointmenting.API.Controllers
         //  ----- URL       : api/timeslot                      -------------------------
         //  ----- POST      : given TimeSlot as TimeSlotDTO     -------------------------
         //  ----- Validates : the dto's data against DateOnly/TimeOnly, -----------------
-        //                    passed Time and duplicate Database entry  -----------------
+        //                  : passed Time and duplicate Database entry  -----------------
         [HttpPost]
         public async Task<Result<Guid>> CreateNewTimeSlot([FromBody] TimeslotDTO dto, CreateTimeSlotValidator validator)
         {
@@ -175,7 +175,7 @@ namespace Appointmenting.API.Controllers
         //  ----- PUT       : the TimeSlot to update with new values    -----------------
         //  ----- Validates : the argument against existence in Database     ------------
         [HttpPut]
-        public async Task<Result<Guid>?> Update([FromBody] UpdateTimeslotDTO timeSlot, UpdateTimeslotValidator validator)
+        public async Task<Result<Guid>> Update([FromBody] UpdateTimeslotDTO timeSlot, UpdateTimeslotValidator validator)
         {
             var command = new UpdateTimeSlotCommand(timeSlot);
             var validationResult =  validator.Validate(command);
@@ -183,17 +183,76 @@ namespace Appointmenting.API.Controllers
             {
                 return new Result<Guid>(Guid.Empty, false, new Error("Parsing.Error", validationResult.Errors[0].ToString()));
             }
-            var result = await mediator.Send(command);
-            if (result != null)
-            {
-                await unit.SaveChangesAsync(CancellationToken.None);
-            }
-            return result!;
+            return await mediator.Send(command);
         }
-
 
         //  *********************************
         //  ***** D E L E T E   *************
         //  *********************************
+
+        //  ----- URL       : api/timeslot/:id                          -----------------
+        //  ----- DELETE    : the TimeSlot with the given id            -----------------
+        //  ----- Validates : the argument against existence in Database     ------------
+        [HttpDelete(":id")]
+        public async Task<Result<Guid>> DeleteById(Guid id, DeleteTimeslotByIdValidator validator)
+        {
+            var command = new DeleteTimeSlotByIDCommand(id);
+            var validationResult = validator.Validate(command);
+            if (!validationResult.IsValid)
+            {
+                return new Result<Guid>(Guid.Empty, false, 
+                    new Error("TimeslotError.NotFound", validationResult.Errors[0].ToString()));
+            }
+            return await mediator.Send(command);
+        }
+
+        //  ----- URL       : api/timeslot/date                         -----------------
+        //  ----- DELETE    : the TimeSlots on the given date           -----------------
+        //  ----- Validates : the argument against DateOnly             -----------------
+        //                  : the existence of TimeSlots on the given date  -------------
+        [HttpDelete("date")]
+        public async Task<Result<List<Guid>>> DeleteByDate(string date, DateTimeValidator dtval,
+            DeleteTimeslotsByDateValidator validator)
+        {
+            var dateValidationResult = dtval.TryValidate(date);
+            if(!dateValidationResult.DateSuccess) 
+            {
+                return new(null, false, new Error("Parsing.Error", "Value is not a valid Date representation"));
+            }
+            var command = new DeleteTimeSlotsByDateCommand(dateValidationResult.Day);
+            var validationResult = validator.Validate(command);
+            if(!validationResult.IsValid)
+            {
+                return new(null, false, new Error("TimeslotError.NotFound", validationResult.Errors[0].ToString()));
+            }
+            return await mediator.Send(command);
+        }
+
+        //  ----- URL       : api/timeslot/allbefore/date               -----------------
+        //  ----- DELETE    : the TimeSlots before the given date       -----------------
+        //  ----- Validates : the argument against DateOnly             -----------------
+        //                  : the existence of TimeSlots before the given date  ---------
+        [HttpDelete("allbefore/date")]
+        public async Task<Result<List<Guid>>> DeleteBeforeDate(string date, DateTimeValidator dtval,
+            DeleteTimeslotsBeforeDateValidator validator)
+        {
+            var dateValidationResult = dtval.TryValidate(date);
+            if(!dateValidationResult.DateSuccess)
+            {
+                return new(null, false, new Error("Parsing.Error", "Value is not a valid Date representation"));
+            }
+            var command = new DeleteTimeSlotsBeforeDateCommand(dateValidationResult.Day);
+            var validationResult = validator.Validate(command);
+            if (!validationResult.IsValid)
+            {
+                return new(null, false, new Error("TimeslotError.NotFound", validationResult.Errors[0].ToString()));
+            }
+            return await mediator.Send(command);
+        }
+
+        //  ----- URL       : api/timeslot/:id                          -----------------
+        //  ----- DELETE    : the TimeSlot with the given id            -----------------
+        //  ----- Validates : the argument against existence in Database     ------------
+
     }
 }

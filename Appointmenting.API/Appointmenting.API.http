@@ -1,6 +1,6 @@
 @Appointmenting.API_HostAddress = http://localhost:5186
 
-GET {{Appointmenting.API_HostAddress}}/weatherforecast/
+GET {{Appointmenting.API_HostAddress}}/api/timeslot/
 Accept: application/json
 
 ###

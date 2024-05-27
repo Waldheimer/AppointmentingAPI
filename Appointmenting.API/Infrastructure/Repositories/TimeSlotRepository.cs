@@ -175,20 +175,40 @@ namespace Appointmenting.API.Infrastructure.Repositories
         public Task<Result<List<Guid>>> DeleteByDate(DateOnly date)
         {
             var deletedGuids = new List<Guid>();
-            var result = ctx.TimeSlots.Where(t => t.day.Equals(date)).ToList();
+            var result = ctx.TimeSlots.AsNoTracking().Where(t => t.day.Equals(date));
             var error =
                 result == null
                 ? new Error("TimeSlot.NotFound", "Timeslots on given Date could not be found in the Database")
                 : Error.None;
-            if(result != null && result.Count > 0)
+            if(result != null && result.Count() > 0)
             {
-                foreach( var t in result)
+                foreach(var t in result)
                 {
                     ctx.TimeSlots.Remove(t);
                     deletedGuids.Add(t.Id);
                 }
             }
             Result<List<Guid>> res = new Result<List<Guid>>(deletedGuids, deletedGuids.Count > 0, error);
+            return Task.FromResult(res);
+        }
+
+        public Task<Result<List<Guid>>> DeleteBeforeDate(DateOnly date)
+        {
+            var deletedGuids = new List<Guid>();
+            var result = ctx.TimeSlots.AsNoTracking().Where(t => t.day < date);
+            var error =
+                result == null
+                ? new Error("TimeSlot.NotFound", "Timeslots before given Date could not be found in the Database")
+                : Error.None;
+            if(result != null && result.Count() > 0)
+            {
+                foreach (var t in result)
+                {
+                    ctx.TimeSlots.Remove(t);
+                    deletedGuids.Add(t.Id);
+                }
+            }
+            var res = new Result<List<Guid>>(deletedGuids, deletedGuids.Count > 0, error);
             return Task.FromResult(res);
         }
 
