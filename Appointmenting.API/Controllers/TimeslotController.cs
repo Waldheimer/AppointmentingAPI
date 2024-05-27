@@ -250,9 +250,5 @@ namespace Appointmenting.API.Controllers
             return await mediator.Send(command);
         }
 
-        //  ----- URL       : api/timeslot/:id                          -----------------
-        //  ----- DELETE    : the TimeSlot with the given id            -----------------
-        //  ----- Validates : the argument against existence in Database     ------------
-
     }
 }
