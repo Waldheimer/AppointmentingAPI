@@ -6,20 +6,20 @@ using MediatR;
 
 namespace Appointmenting.API.Infrastructure.CommandHandler
 {
-    public class CreateTimeslotCommandHandler : IRequestHandler<CreateTimeSlotCommand, Result<Guid>>
+    public class DeleteTimeSlotsBeforeDateCommandHandler : IRequestHandler<DeleteTimeSlotsBeforeDateCommand, Result<List<Guid>>>
     {
-        private ITimeslotRepo _repo;
+        private readonly ITimeslotRepo _repo;
         private readonly IUnitOfWork _unit;
 
-        public CreateTimeslotCommandHandler(ITimeslotRepo repo, IUnitOfWork unit)
+        public DeleteTimeSlotsBeforeDateCommandHandler(ITimeslotRepo repo, IUnitOfWork unit)
         {
             _repo = repo;
             _unit = unit;
         }
 
-        public async Task<Result<Guid>> Handle(CreateTimeSlotCommand request, CancellationToken cancellationToken)
+        public async Task<Result<List<Guid>>> Handle(DeleteTimeSlotsBeforeDateCommand request, CancellationToken cancellationToken)
         {
-            var result = await _repo.Create(request.Value);
+            var result = await _repo.DeleteBeforeDate(request.Date);
             if(result.IsSuccess)
             {
                 await _unit.SaveChangesAsync(cancellationToken);

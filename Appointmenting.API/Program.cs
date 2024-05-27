@@ -4,6 +4,7 @@ using Appointmenting.API.Domain.Entities;
 using Appointmenting.API.Infrastructure.Database;
 using Appointmenting.API.Infrastructure.Extensions;
 using Appointmenting.API.Infrastructure.Repositories;
+using Appointmenting.API.Infrastructure.Validators;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -31,10 +32,20 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+//  ***** TimeSlot Validators
+builder.Services.AddScoped<CreateTimeSlotValidator>();
+builder.Services.AddScoped<UpdateTimeslotValidator>();
+builder.Services.AddScoped<DeleteTimeslotByIdValidator>();
+builder.Services.AddScoped<DeleteTimeslotsByDateValidator>();
+builder.Services.AddScoped<DeleteTimeslotsBeforeDateValidator>();
+
+//  ***** Appointment Validators
+
+//  ***** Common Validators
+builder.Services.AddScoped<DateTimeValidator>();
+
 builder.Services.AddScoped<ITimeslotRepo, TimeSlotRepository>();
-//builder.Services.AddScoped<IKbCode, KBCodeRepo>();
-//builder.Services.AddScoped<IKbDocumentation, KBDocumentationRepo>();
-//builder.Services.AddScoped<DefaultInfoRepo>();
+builder.Services.AddScoped<IAppointmentRepo, AppointmentRepository>();
 
 builder.Services.AddMediatR(config => {
     config.RegisterServicesFromAssembly(typeof(Program).Assembly);

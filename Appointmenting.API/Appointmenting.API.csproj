@@ -24,9 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\ServiceResponses\" />
-    <Folder Include="Application\Services\" />
-    <Folder Include="Domain\NewFolder\" />
     <Folder Include="Infrastructure\Database\Migrations\" />
   </ItemGroup>
 
