@@ -18,11 +18,11 @@ namespace Appointmenting.API.Infrastructure.Database.Configuration
 
             builder.Property(c => c.FirstName)
                 .HasConversion(
-                fn => fn.Value,
+                fn => fn!.Value,
                 value => FirstName.Create(value).Value);
             builder.Property(c => c.LastName)
                 .HasConversion(
-                fn => fn.Value,
+                fn => fn!.Value,
                 value => LastName.Create(value).Value);
         }
     }

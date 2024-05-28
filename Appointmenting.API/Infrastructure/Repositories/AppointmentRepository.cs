@@ -9,11 +9,14 @@ namespace Appointmenting.API.Infrastructure.Repositories
     public class AppointmentRepository : IAppointmentRepo
     {
         private readonly AppDbContext ctx;
-        private readonly AppUserDbContext userctx;
+        //private readonly AppUserDbContext userctx;
 
-        public AppointmentRepository(AppDbContext ctx)
+        public AppointmentRepository(AppDbContext ctx 
+            //,AppUserDbContext userctx
+            )
         {
             this.ctx = ctx;
+            //this.userctx = userctx;
         }
 
         //  **************************************************************
