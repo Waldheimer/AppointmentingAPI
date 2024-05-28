@@ -58,7 +58,7 @@ namespace Appointmenting.API.Infrastructure.Repositories
             var result = ctx.Employees.AsNoTracking().ToList();
             if(result == null)
             {
-                res = new(null, false, new Error("EmployeeError.NotFound", "No Employees could be found"));
+                res = new(new List<Employee>(), false, new Error("EmployeeError.NotFound", "No Employees could be found"));
             }
             else
             {

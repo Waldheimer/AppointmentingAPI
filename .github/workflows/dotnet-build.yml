@@ -2,7 +2,7 @@ name: .NET
 
 on:
   push:
-    branches: [ "main", "Appointments", "TimeSlots" ]
+    branches: [ "main", "appointments", "timeslots" ]
   pull_request:
     branches: [ "main" ]
 
@@ -18,9 +18,6 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore

@@ -1,4 +1,5 @@
 ﻿using Appointmenting.API.Application.Commands;
+using Appointmenting.API.Application.Queries;
 using Appointmenting.API.Domain.DTOs;
 using Appointmenting.API.Domain.Entities;
 using Appointmenting.API.Domain.Primitives;
@@ -39,12 +40,16 @@ namespace Appointmenting.API.Controllers
 
         }
 
-
         //  **************************************************************
         //  ***** R E A D   **********************************************
         //  **************************************************************
 
-
+        [HttpGet]
+        public async Task<Result<List<Employee>>> GetAllEmployees()
+        {
+            var query = new GetAllEmployeesQuery();
+            return await mediator.Send(query);
+        }
 
 
         //  **************************************************************
