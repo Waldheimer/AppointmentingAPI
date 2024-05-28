@@ -6,12 +6,10 @@ namespace Appointmenting.API.Application.RepositoryContracts
 {
     public interface ITimeslotRepo
     {
-        //  CREATE
+        //  ***** C R E A T E
         Task<Result<Guid>> Create(TimeslotDTO dto);
 
-        //  READ
-        //  ***** All Timeslots unordered
-        Task<Result<IEnumerable<TimeSlot>?>> GetAll();
+        //  ***** R E A D
         //  ***** All Timeslots in ascending order by Date and Time
         Task<Result<List<TimeSlot>?>> GetAllOrderedAscending();
         //  ***** All Timeslots in ascending order by Date and Time on the given Date
@@ -27,10 +25,10 @@ namespace Appointmenting.API.Application.RepositoryContracts
         //  ***** The Timeslot at given Date and Time
         Task<Result<TimeSlot?>> GetByDateAndTime(DateOnly date, TimeOnly time);
 
-        //  UPDATE
+        //  ***** U P D A T E
         Task<Result<Guid>> Update(UpdateTimeslotDTO timeslot);
 
-        //  DELETE
+        //  ***** D E L E T E
         Task<Result<Guid>> DeleteById(Guid id);
         //  ***** Delete all Timeslots on a given Date
         Task<Result<List<Guid>>> DeleteByDate(DateOnly date);

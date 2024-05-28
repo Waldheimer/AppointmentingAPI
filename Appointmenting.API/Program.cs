@@ -43,9 +43,13 @@ builder.Services.AddScoped<DeleteTimeslotsBeforeDateValidator>();
 
 //  ***** Common Validators
 builder.Services.AddScoped<DateTimeValidator>();
+builder.Services.AddScoped<AppointmentDtoValidator>();
+builder.Services.AddScoped<AppointmentConfirmationDtoValidator>();
 
 builder.Services.AddScoped<ITimeslotRepo, TimeSlotRepository>();
 builder.Services.AddScoped<IAppointmentRepo, AppointmentRepository>();
+builder.Services.AddScoped<IEmployeeRepo, EmployeeRepository>();
+builder.Services.AddScoped<IUserRepo, UserRepository>();
 
 builder.Services.AddMediatR(config => {
     config.RegisterServicesFromAssembly(typeof(Program).Assembly);
