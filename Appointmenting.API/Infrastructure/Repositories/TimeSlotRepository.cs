@@ -38,12 +38,6 @@ namespace Appointmenting.API.Infrastructure.Repositories
         //  **************************************************************
         //  ***** R E A D  ***********************************************
         //  **************************************************************
-        #region unused
-        public Task<Result<IEnumerable<TimeSlot>?>> GetAll()
-        {
-            throw new NotImplementedException();
-        } // UNUSED
-        #endregion
         public Task<Result<TimeSlot>> GetById(Guid id)
         {
             var result = ctx.TimeSlots.AsNoTracking()
