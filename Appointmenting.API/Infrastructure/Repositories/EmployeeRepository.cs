@@ -3,6 +3,7 @@ using Appointmenting.API.Domain.Entities;
 using Appointmenting.API.Domain.Primitives;
 using Appointmenting.API.Domain.ValueObjects;
 using Appointmenting.API.Infrastructure.Database;
+using Microsoft.EntityFrameworkCore;
 
 namespace Appointmenting.API.Infrastructure.Repositories
 {
@@ -39,7 +40,7 @@ namespace Appointmenting.API.Infrastructure.Repositories
         public Task<Result<Employee>> GetEmployeeById(EmployeeId employeeId)
         {
             Result<Employee> res;
-            var result = ctx.Employees.First(e =>  e.EmployeeId == employeeId);
+            var result = ctx.Employees.AsNoTracking().FirstOrDefault(e =>  e.EmployeeId == employeeId);
             if(result == null)
             {
                 res = new(null, false, new Error("EmployeeError.NotFound", "Employee with given Id could not be found"));
@@ -54,7 +55,7 @@ namespace Appointmenting.API.Infrastructure.Repositories
         public Task<Result<List<Employee>>> GetAllEmployees()
         {
             Result<List<Employee>> res;
-            var result = ctx.Employees.ToList();
+            var result = ctx.Employees.AsNoTracking().ToList();
             if(result == null)
             {
                 res = new(null, false, new Error("EmployeeError.NotFound", "No Employees could be found"));
@@ -91,7 +92,7 @@ namespace Appointmenting.API.Infrastructure.Repositories
         public Task<Result<EmployeeId>> DeleteEmployeeById(EmployeeId employeeId)
         {
             Result<EmployeeId> res;
-            var result = ctx.Employees.Remove(ctx.Employees.First(c => c.EmployeeId == employeeId));
+            var result = ctx.Employees.Remove(ctx.Employees.AsNoTracking().First(c => c.EmployeeId == employeeId));
             if(result == null)
             {
                 res = new(EmployeeId.Empty, false, new Error("EmployeeError.Delete", "Employee could not be deleted"));
@@ -106,7 +107,7 @@ namespace Appointmenting.API.Infrastructure.Repositories
         public Task<Result<EmployeeId>> DeleteEmployeeByNames(FirstName firstName, LastName lastName)
         {
             Result<EmployeeId> res;
-            var result = ctx.Employees.Remove(ctx.Employees.First(c => c.FirstName == firstName && c.LastName == lastName));
+            var result = ctx.Employees.Remove(ctx.Employees.AsNoTracking().First(c => c.FirstName == firstName && c.LastName == lastName));
             if(result == null)
             {
                 res = new(EmployeeId.Empty, false, new Error("EmployeeError.Delete", "Employee could not be deleted"));

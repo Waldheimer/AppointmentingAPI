@@ -1,4 +1,5 @@
-﻿using Appointmenting.API.Domain.ValueObjects;
+﻿using Appointmenting.API.Domain.DTOs;
+using Appointmenting.API.Domain.ValueObjects;
 
 namespace Appointmenting.API.Domain.Entities
 {
@@ -19,6 +20,12 @@ namespace Appointmenting.API.Domain.Entities
             EmployeeId = id,
             FirstName = FirstName.Default,
             LastName = LastName.Default
+        };
+        public static Employee FromDTO(EmployeeDTO dto) => new Employee
+        {
+            EmployeeId = EmployeeId.CreateNew(),
+            FirstName = new FirstName(dto.FirstName),
+            LastName = new LastName(dto.LastName)
         };
     }
 }
