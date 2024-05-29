@@ -4,7 +4,7 @@ using Appointmenting.API.Application.ServiceContracts;
 using Appointmenting.API.Domain.Primitives;
 using MediatR;
 
-namespace Appointmenting.API.Infrastructure.CommandHandler
+namespace Appointmenting.API.Infrastructure.CommandHandler.TimeSlots
 {
     public class CreateTimeslotCommandHandler : IRequestHandler<CreateTimeSlotCommand, Result<Guid>>
     {
@@ -20,7 +20,7 @@ namespace Appointmenting.API.Infrastructure.CommandHandler
         public async Task<Result<Guid>> Handle(CreateTimeSlotCommand request, CancellationToken cancellationToken)
         {
             var result = await _repo.Create(request.Value);
-            if(result.IsSuccess)
+            if (result.IsSuccess)
             {
                 await _unit.SaveChangesAsync(cancellationToken);
             }

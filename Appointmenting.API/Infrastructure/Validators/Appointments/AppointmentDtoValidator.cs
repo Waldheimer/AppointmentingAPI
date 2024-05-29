@@ -3,7 +3,7 @@ using Appointmenting.API.Domain.DTOs;
 using Appointmenting.API.Domain.Entities;
 using FluentValidation;
 
-namespace Appointmenting.API.Infrastructure.Validators
+namespace Appointmenting.API.Infrastructure.Validators.Appointments
 {
     public class AppointmentDtoValidator : AbstractValidator<RequestAppointmentDTO>
     {
@@ -26,10 +26,10 @@ namespace Appointmenting.API.Infrastructure.Validators
 
             RuleFor(r => r.User).Must(data =>
                 {
-                var result = userRepo.GetUserById(data);
-                User = result == null ? null : result.Result.Value;
-                return result != null;
-            }).WithMessage("Error finding User");
+                    var result = userRepo.GetUserById(data);
+                    User = result == null ? null : result.Result.Value;
+                    return result != null;
+                }).WithMessage("Error finding User");
         }
     }
 }

@@ -3,7 +3,7 @@ using Appointmenting.API.Domain.DTOs;
 using Appointmenting.API.Domain.Entities;
 using FluentValidation;
 
-namespace Appointmenting.API.Infrastructure.Validators
+namespace Appointmenting.API.Infrastructure.Validators.Appointments
 {
     public class AppointmentConfirmationDtoValidator : AbstractValidator<AppointmentConfirmationDTO>
     {

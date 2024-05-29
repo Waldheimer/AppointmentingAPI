@@ -2,11 +2,11 @@
 using Appointmenting.API.Application.RepositoryContracts;
 using FluentValidation;
 
-namespace Appointmenting.API.Infrastructure.Validators
+namespace Appointmenting.API.Infrastructure.Validators.TimeSlots
 {
     public class DeleteTimeslotByIdValidator : AbstractValidator<DeleteTimeSlotByIDCommand>
     {
-        public DeleteTimeslotByIdValidator(ITimeslotRepo repo) 
+        public DeleteTimeslotByIdValidator(ITimeslotRepo repo)
         {
             RuleFor(t => t.ID).NotEmpty().Must(data =>
             {

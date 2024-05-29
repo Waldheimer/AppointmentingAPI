@@ -5,6 +5,8 @@ using Appointmenting.API.Infrastructure.Database;
 using Appointmenting.API.Infrastructure.Extensions;
 using Appointmenting.API.Infrastructure.Repositories;
 using Appointmenting.API.Infrastructure.Validators;
+using Appointmenting.API.Infrastructure.Validators.Appointments;
+using Appointmenting.API.Infrastructure.Validators.TimeSlots;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -59,6 +61,7 @@ builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 
 var app = builder.Build();
 
+app.ApplyMigrations();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

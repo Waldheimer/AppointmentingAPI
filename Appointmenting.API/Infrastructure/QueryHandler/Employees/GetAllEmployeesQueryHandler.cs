@@ -5,7 +5,7 @@ using Appointmenting.API.Domain.Entities;
 using Appointmenting.API.Domain.Primitives;
 using MediatR;
 
-namespace Appointmenting.API.Infrastructure.CommandHandler
+namespace Appointmenting.API.Infrastructure.QueryHandler.Employees
 {
     public class GetAllEmployeesQueryHandler : IRequestHandler<GetAllEmployeesQuery, Result<List<Employee>>>
     {

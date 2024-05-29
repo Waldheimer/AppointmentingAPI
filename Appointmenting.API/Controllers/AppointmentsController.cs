@@ -3,7 +3,7 @@ using Appointmenting.API.Application.ServiceContracts;
 using Appointmenting.API.Domain.DTOs;
 using Appointmenting.API.Domain.Entities;
 using Appointmenting.API.Domain.Primitives;
-using Appointmenting.API.Infrastructure.Validators;
+using Appointmenting.API.Infrastructure.Validators.Appointments;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

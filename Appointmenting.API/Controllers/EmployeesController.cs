@@ -3,7 +3,7 @@ using Appointmenting.API.Application.Queries;
 using Appointmenting.API.Domain.DTOs;
 using Appointmenting.API.Domain.Entities;
 using Appointmenting.API.Domain.Primitives;
-using Appointmenting.API.Infrastructure.Validators;
+using Appointmenting.API.Infrastructure.Validators.Employees;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -50,7 +50,12 @@ namespace Appointmenting.API.Controllers
             var query = new GetAllEmployeesQuery();
             return await mediator.Send(query);
         }
-
+        [HttpGet(":id")]
+        public async Task<Result<Employee?>> GetEmployeeById(EmployeeId id)
+        {
+            var query = new GetEmployeeByIdQuery(id);
+            return await mediator.Send(query);
+        }
 
         //  **************************************************************
         //  ***** U P D A T E   ******************************************

@@ -1,6 +1,16 @@
 name: .NET
 
-on:
+on: 
+  workflow_dispatch:
+    inputs:
+      loglevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+      tags:
+        description: 'Tags'
+        required: false
+        default: 'Manual Tag'
   push:
     branches: ['master', 'appointments', 'timeslots']
   pull_request:

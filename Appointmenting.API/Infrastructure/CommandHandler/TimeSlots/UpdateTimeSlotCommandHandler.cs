@@ -5,7 +5,7 @@ using Appointmenting.API.Domain.Entities;
 using Appointmenting.API.Domain.Primitives;
 using MediatR;
 
-namespace Appointmenting.API.Infrastructure.CommandHandler
+namespace Appointmenting.API.Infrastructure.CommandHandler.TimeSlots
 {
     public class UpdateTimeSlotCommandHandler : IRequestHandler<UpdateTimeSlotCommand, Result<Guid>>
     {
@@ -21,7 +21,7 @@ namespace Appointmenting.API.Infrastructure.CommandHandler
         public async Task<Result<Guid>> Handle(UpdateTimeSlotCommand request, CancellationToken cancellationToken)
         {
             var result = await _repo.Update(request.TimeSlot);
-            if(result.IsSuccess)
+            if (result.IsSuccess)
             {
                 await _unit.SaveChangesAsync(cancellationToken);
             }

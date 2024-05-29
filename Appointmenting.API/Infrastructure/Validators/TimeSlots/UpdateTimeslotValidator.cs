@@ -2,7 +2,7 @@
 using Appointmenting.API.Application.RepositoryContracts;
 using FluentValidation;
 
-namespace Appointmenting.API.Infrastructure.Validators
+namespace Appointmenting.API.Infrastructure.Validators.TimeSlots
 {
     public class UpdateTimeslotValidator : AbstractValidator<UpdateTimeSlotCommand>
     {

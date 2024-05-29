@@ -4,7 +4,7 @@ using Appointmenting.API.Domain.Entities;
 using Appointmenting.API.Domain.Primitives;
 using MediatR;
 
-namespace Appointmenting.API.Infrastructure.QueryHandler
+namespace Appointmenting.API.Infrastructure.QueryHandler.TimeSlots
 {
     public class GetAllTimeSlotsQueryHandler : IRequestHandler<GetAllTimeSlotsQuery, Result<List<TimeSlot>?>>
     {

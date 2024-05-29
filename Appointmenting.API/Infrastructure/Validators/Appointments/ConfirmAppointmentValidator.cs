@@ -1,7 +1,7 @@
 ﻿using Appointmenting.API.Application.Commands;
 using FluentValidation;
 
-namespace Appointmenting.API.Infrastructure.Validators
+namespace Appointmenting.API.Infrastructure.Validators.Appointments
 {
     public class ConfirmAppointmentValidator : AbstractValidator<ConfirmAppointmentCommand>
     {
