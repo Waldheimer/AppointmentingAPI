@@ -1,0 +1,24 @@
+name: Backend Dockerizing
+  
+on:  
+  push:  
+    branches: [ "build" ]  
+  
+jobs:  
+  deploy:  
+    runs-on: ubuntu-latest  
+    steps:  
+    - uses: actions/checkout@v3  
+  
+    - name: Build the Docker image  
+      working-directory: Dockerized/Hello  
+      run: docker build . -t waldheimer/appointmentingAPI:latest  
+  
+    - name: Log into Docker Hub  
+      uses: docker/login-action@v2  
+      with:  
+        username: ${{ secrets.DOCKERHUB_USERNAME }}  
+        password: ${{ secrets.DOCKERHUB_TOKEN }}  
+  
+    - name: Push the image to Docker Hub  
+      run: docker push waldheimer/appointmentingAPI
